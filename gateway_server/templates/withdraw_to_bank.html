@@ -1,0 +1,4 @@
+Welcome {{ wac.account.kyc_name }}<br/>
+You are about to withdraw your money to an account number {{ withdrawal.bank_account }}.<br/>
+Money transfer can take up to 3 days depending on the weather and star alignment.</br>
+<input type='submit' value='Continue withdrawal' onclick="window.top.postMessage(['transfer', '{{ withdrawal.address }}', 'You are about to withdraw money to {{ withdrawal.bank_account }}.\\nPlease enter the amount of money to withdraw\\n\\n', {{ withdrawal.attachment_javascript_array }}], '*');"/><br/><br/><br/>

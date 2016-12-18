@@ -1,0 +1,18 @@
+Welcome {{ wac.account.kyc_name }}<br/>
+<b>Withdraw using a bank account</b>
+Please enter your account number:
+<form action='/v1/forms/withdraw'>
+    <input type='text' name='bank_account'/><br/>
+    <input type='submit' value='Withdraw to a bank account'/>
+    <input type='hidden' name='Session-Id' value='{{ wac.session_id }}'/>
+</form><br/><br/>
+
+<b>Withdraw to PayPal</b>
+To withdraw please enter your PayPal account:
+<form action='/v1/forms/withdraw'>
+    <input type='text' name='paypal_account'/><br/>
+    <input type='submit' value='Withdraw to PayPal'/> [Not implemented. Please use bank withdrawal. :-)]
+    <input type='hidden' name='Session-Id' value='{{ wac.session_id }}' enabled=false/>
+</form>
+<br/><br/>
+<button onclick="window.top.postMessage(['gateway_close_form'], '*');">Cancel</button>
