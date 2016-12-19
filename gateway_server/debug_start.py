@@ -4,6 +4,7 @@ import time
 import logging
 from front_end_manager.main import FrontEndManager
 from plugin_manager.main import PluginManager
+from waves_manager.main import WavesManager
 from common.settings import set_loglevel
 
 set_loglevel(logging.DEBUG)
@@ -18,10 +19,13 @@ if __name__ == "__main__":
     front_end_manager.start()
     plugin_manager = PluginManager()
     plugin_manager.start()
+    waves_manager = WavesManager()
+    waves_manager.start()
 
     def terminate_all():
         front_end_manager.terminate()
         plugin_manager.terminate()
+        waves_manager.terminate()
         exit(0)
 
     while True:
@@ -29,5 +33,6 @@ if __name__ == "__main__":
             terminate_all()
         if not plugin_manager.is_alive():
             terminate_all()
+        if not waves_manager.is_alive():
+            terminate_all()
         time.sleep(0.03)
-

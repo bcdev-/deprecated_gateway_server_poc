@@ -17,12 +17,11 @@ print("Gateway's public key:", gateway_public_key, base58.b58encode(gateway_publ
 
 default_fee = 100000
 
-#currencies = ["3A2FXAmdSKVGxikERJvC13FG7ADf2sqb8kmzYokUzxm9"]
-currencies = {"3A2FXAmdSKVGxikERJvC13FG7ADf2sqb8kmzYokUzxm9": "mock_bank_usd"}
+currencies = {"3k2qVm2BSGvjCXNBGdFwq5mYSrd4LJmVgfBGro4qRQ1W": "mock_bank_usd"}
 
-confirmations = 0
+required_confirmations = 0
 
-start_from_block = 4993
+start_from_block = 1050
 rescan_blockchain = False
 
 import logging

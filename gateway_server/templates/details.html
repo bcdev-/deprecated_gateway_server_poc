@@ -1,5 +1,14 @@
 {% if wac.account.kyc_completed %}
-Welcome {{ wac.account.address }}<br/>
+Welcome {{ wac.account.kyc_name }}<br/>
+Account verification: <font color='#0a0'>OK</font>. Withdrawal limit per day: $2000/$2000.<br/><br/>
+
+<a href='/v1/forms/change_your_data?Session-Id={{ wac.session_id }}'>Change your data</a><br/><br/>
+
+Your current balance: TODO! <a href='/v1/forms/deposit?Session-Id={{ wac.session_id }}'>Deposit funds</a> | <a href='/v1/forms/withdraw?Session-Id={{ wac.session_id }}'>Withdraw funds</a> <br/><br/>
+<a href='/v1/forms/deposit_withdrawal_history?Session-Id={{ wac.session_id }}'>Deposit/withdrawal history</a><br/><br/>
+<a href='/v1/forms/support?Session-Id={{ wac.session_id }}'>Contact support</a><br/><br/>
+
+<button onclick="window.top.postMessage(['gateway_close_form'], '*');">Close</button>
 
 {% else %}
     Greetings! Welcome to out bank!<br/>
@@ -12,8 +21,8 @@ Welcome {{ wac.account.address }}<br/>
     </select><br/>
     <input type='submit' value='Sign up! :-)'/>
     <input type='hidden' name='Session-Id' value='{{ wac.session_id }}'/>
-    </form>
+    </form><br/><br/>
+    <button onclick="window.top.postMessage(['gateway_close_form'], '*');">Cancel</button>
 
 {% endif %}
 
-<button onclick="window.top.postMessage(['gateway_close_form'], '*');">Cancel</button>

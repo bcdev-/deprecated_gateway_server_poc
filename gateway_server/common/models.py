@@ -9,6 +9,9 @@ from .db import Base
 from sqlalchemy import Column, Integer, String, ForeignKey, BigInteger, Boolean
 from sqlalchemy.orm.session import Session
 from .settings import currencies, session_timeout
+from .node import get_new_deposit_account
+
+logger = logging.getLogger(__name__)
 
 AccountExt = []
 DepositExt = []
@@ -31,13 +34,15 @@ class Account(Base, *AccountExt):
         self.address = address
         self.public_key = public_key
         self.deposit_address = deposit_address
+        for account_extension in AccountExt:
+            account_extension.__init__(self)
 
     @staticmethod
     def get_or_create(session, address, public_key):
         account = session.query(Account).filter_by(address=address).first()
         if account is None:
             # TODO: Deposit address
-            account = Account(address, public_key, deposit_address=str(random.random()))
+            account = Account(address, public_key, deposit_address=get_new_deposit_account())
             logger.info("Registering new account: " + str(account))
             session.add(account)
         return account
@@ -98,7 +103,10 @@ class Deposit(Base, *DepositExt):
         self.address = address
         self.currency = currency
         self.amount = amount
-        DepositExt.__init__(self, *args, **kwargs)
+        [deposit_ext.__init__(self, *args, **kwargs) for deposit_ext in DepositExt]
+
+    def __str__(self):
+        return "<Deposit %s %s %d>" % (self.address, self.currency, self.amount)
 
     @staticmethod
     def get_all(session: Session, account: Account) -> list:
@@ -106,9 +114,24 @@ class Deposit(Base, *DepositExt):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     address = Column(String, ForeignKey('accounts.address'), index=True)
-    # Blockchain asset ID
     currency = Column(String)
+    """Blockchain asset ID"""
+
     amount = Column(BigInteger)
+
+    accepted = Column(Boolean, default=False, index=True)
+    """Transaction is accepted for execution - it's confirmed&accounted [in case of banking transactions]
+    or has sufficient amount of confirmations [in case of blockchain transactions]"""
+
+    executed = Column(Boolean, default=False, index=True)
+    """Transaction was executed. It doesn't matter what kind of execution it is [it may be a refund, a deposit or
+    really anything else]"""
+
+    rejected = Column(Boolean, default=False, index=True)
+    """Deposit was rejected"""
+
+    waves_transaction_id = Column(String, nullable=True, default=None)
+    # TODO: Add timestamp
 
     @property
     def currency_name(self) -> str:
@@ -124,10 +147,6 @@ class Deposit(Base, *DepositExt):
         return str_format % (int(self.amount / (10 ** currency.decimals)),
                              int(self.amount % (10 ** currency.decimals)), currency.suffix)
 
-    already_accounted = Column(Boolean, default=False, index=True)
-    waves_transaction_id = Column(String, nullable=True, default=None)
-    # TODO: Add timestamp
-
 
 class Withdrawal(Base, *WithdrawalExt):
     __tablename__ = 'withdrawal'
@@ -140,7 +159,7 @@ class Withdrawal(Base, *WithdrawalExt):
     def accept(self, transaction: BlockchainTransaction):
         assert(self.accepted is False)
         self.currency = transaction.currency
-        self.amount = transaction.amount  # TODO: Withdrawal fee - right now 0%
+        self.amount = transaction.amount
         self.transaction_id = transaction.transaction_id
         self.address = transaction.address
         self.accepted = True
@@ -152,12 +171,14 @@ class Withdrawal(Base, *WithdrawalExt):
     address = Column(String, ForeignKey('accounts.address'), index=True)
     attachment = Column(String, primary_key=True)
     """Attachment is a withdrawal's ID."""
-    currency = Column(String)  # Asset ID
+
+    currency = Column(String, index=True)  # Asset ID
     amount = Column(BigInteger)
     transaction_id = Column(String, ForeignKey('blockchain_transactions.transaction_id'), nullable=True)
     # TODO: Timestamp to purge old failed withdrawals.
     accepted = Column(Boolean, default=False, index=True)
     executed = Column(Boolean, default=False, index=True)
+    rejected = Column(Boolean, default=False, index=True)
 
 
 class UserSession(Base):
