@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 from common.settings import bind_address, bind_port, currencies
 
 template_dir = os.path.abspath('templates')
-flask = Flask(__name__, template_folder=template_dir)
+static_dir = os.path.abspath('static')
+flask = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 
 '''
 def verify_auth_hash(wac):

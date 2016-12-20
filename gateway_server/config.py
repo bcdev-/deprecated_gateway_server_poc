@@ -17,11 +17,12 @@ print("Gateway's public key:", gateway_public_key, base58.b58encode(gateway_publ
 
 default_fee = 100000
 
-currencies = {"3k2qVm2BSGvjCXNBGdFwq5mYSrd4LJmVgfBGro4qRQ1W": "mock_bank_usd"}
+#currencies = {"3k2qVm2BSGvjCXNBGdFwq5mYSrd4LJmVgfBGro4qRQ1W": "mock_bank_usd"}
+currencies = {"CcvuevJVhadmRipPQgWkGDreUcdnRGWjBJ2ey7mzop9g": "dogecoin"}
 
 required_confirmations = 0
 
-start_from_block = 1050
+start_from_block = 2531
 rescan_blockchain = False
 
 import logging
@@ -29,3 +30,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 session_timeout = 600  # 10 minutes
+
+dogecoin_api_username = 'dogecoinrpc'
+dogecoin_api_password = 'Fwotyfs1PcBw4WThocUZwjkaqYoryD4LEyBm7PuBqwX3'
+dogecoin_api_url = 'http://127.0.0.1:22555'

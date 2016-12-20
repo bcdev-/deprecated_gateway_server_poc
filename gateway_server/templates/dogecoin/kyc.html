@@ -1,0 +1,30 @@
+<html>
+<head>
+    <script src="/static/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/dogecoin.css"/>
+</head>
+<body>
+<h3>Welcome to bcdev's Dogecoin gateway!</h3><br/>
+<img class="spin" src="http://dogecoin.com/imgs/dogecoin-300.png" height="100"/><br/>
+<b>Please keep in mind that this is a TEST Dogecoin Gateway. All your funds can be lost and there will be no
+    refunds!</b>
+So dear shibes, please deposit only small amounts.<br/><br/>
+
+<form action="/v1/forms/kyc" method="get">
+    <b>The gateway will stop functioning on [TODO: Date and day]. When this happens:</b><br/>
+    <input type="radio" name="refund" value="no"
+           onclick="$('#refund_address').prop('disabled', true);$('#refund_address').prop('value', '');">I want to
+    donate my remaining funds to bcdev. [they will be spent of
+    caffeine and pizza]<br/>
+    <input type="radio" name="refund" value="yes" onclick="$('#refund_address').prop('disabled', false);">I want to
+    request a refund to this Dogecoin address: <input
+        type="text" name="refund_address" id="refund_address" value="{{refund_address|e}}" disabled/><br/><br/>
+    <input type="checkbox" name="nohackrefunds" value="yes">I understand that this is an <i>experimental</i> Dogecoin
+    gateway. I expect no refunds in case of hack.<br/>
+    <font color="#f00"><pre>{{alert}}</pre></font><br/>
+    <input type="submit" value="Register"/>
+    <input type="hidden" name="Session-Id" value="{{wac.session_id}}"/>
+</form>
+<button onclick="window.top.postMessage(['gateway_close_form'], '*');">Cancel</button>
+</body>
+</html>
