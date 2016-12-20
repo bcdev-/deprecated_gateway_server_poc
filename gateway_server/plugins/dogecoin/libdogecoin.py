@@ -2,7 +2,7 @@ from unittest import TestCase
 from requests import post
 from requests.auth import HTTPBasicAuth
 from common.settings import dogecoin_api_username, dogecoin_api_password, dogecoin_api_url
-import json
+import simplejson as json
 
 
 def get_new_address():
@@ -23,6 +23,17 @@ def validate_address(address):
     r = post(dogecoin_api_url, auth=HTTPBasicAuth(dogecoin_api_username, dogecoin_api_password),
              data=json.dumps(payload))
     return r.json()['result']['isvalid']
+
+
+def get_last_transactions(number=1000000, starting_from=0):
+    payload = {
+        "method": "listtransactions",
+        "params": ["", number, starting_from]
+    }
+    r = post(dogecoin_api_url, auth=HTTPBasicAuth(dogecoin_api_username, dogecoin_api_password),
+             data=json.dumps(payload))
+
+    return json.loads(r.text, use_decimal=True)['result']
 
 
 class Test(TestCase):

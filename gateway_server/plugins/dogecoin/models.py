@@ -1,12 +1,13 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, BigInteger, Boolean
 from .libdogecoin import get_new_address
+from common.db import Base
 
 
 class Account:
     def __init__(self):
         self.dogecoin_deposit_address = get_new_address()
 
-    dogecoin_deposit_address = Column(String)
+    dogecoin_deposit_address = Column(String, index=True)
     dogecoin_kyc_completed = Column(Boolean, default=False)
     dogecoin_refund_address = Column(String, nullable=True, default=None)
 
@@ -22,6 +23,10 @@ class Withdrawal:
     #     withdrawal.address = account.deposit_address
     #     return withdrawal
 
+
+class Deposit:
+    dogecoin_txid = Column(String, nullable=True, default=None, index=True)
+    dogecoin_block = Column(Integer, nullable=True, default=None)
 
 ########################
 # Miscellaneous models #

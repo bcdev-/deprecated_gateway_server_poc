@@ -22,7 +22,7 @@ currencies = {"CcvuevJVhadmRipPQgWkGDreUcdnRGWjBJ2ey7mzop9g": "dogecoin"}
 
 required_confirmations = 0
 
-start_from_block = 2531
+start_from_block = 3301
 rescan_blockchain = False
 
 import logging
@@ -34,3 +34,6 @@ session_timeout = 600  # 10 minutes
 dogecoin_api_username = 'dogecoinrpc'
 dogecoin_api_password = 'Fwotyfs1PcBw4WThocUZwjkaqYoryD4LEyBm7PuBqwX3'
 dogecoin_api_url = 'http://127.0.0.1:22555'
+dogecoin_main_address = 'DEYtqoRfH2MWytHskuvWFrrWZP1qH9H3vN'
+dogecoin_confirmations = 0
+dogecoin_withdrawal_fee = 1
