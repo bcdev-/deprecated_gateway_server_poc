@@ -1,0 +1,19 @@
+<html>
+<head>
+    <script src="/static/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/dogecoin.css"/>
+</head>
+<body style="font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;">
+<img class="spin" src="http://dogecoin.com/imgs/dogecoin-300.png" height="100"/><br/>
+Enter a Dogecoin account:
+<form action='/v1/forms/withdraw'>
+    <input type='text' name='dogecoin_account' value="{{ dogecoin_account }}"/>
+    <input type='submit' value='Send Dogecoin'/>
+    <input type='hidden' name='Session-Id' value='{{ wac.session_id }}'/>
+</form>
+<font color="#f00"><pre>{{alert}}</pre></font><br/>
+<br/><br/>
+
+<button onclick="window.top.postMessage(['gateway_close_form'], '*');">Cancel</button>
+</body>
+</html>

@@ -9,7 +9,7 @@ from common.settings import set_loglevel
 
 set_loglevel(logging.DEBUG)
 
-if sys.version_info < (3,0):
+if sys.version_info < (3, 0):
     print("This program has to be run with Python 3 interpreter.")
     print("Try: python3 %s" % sys.argv[0])
     sys.exit(1)

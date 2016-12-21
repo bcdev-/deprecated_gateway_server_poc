@@ -71,19 +71,27 @@ def kyc(session: Session, wac: WAC):
 
 @kyc_required(redirect="kyc")
 def withdraw(session: Session, wac: WAC):
-    # if 'bank_account' in request.args:
-    #     withdrawal = Withdrawal.to_bank_account(request.args['bank_account'], wac.account)
-    #     session.add(withdrawal)
-    #     session.commit()
-    #     return render_template('withdraw_to_bank.html', wac=wac, withdrawal=withdrawal)
+    alert = ''
+    dogecoin_account = ''
+    if 'dogecoin_account' in request.args:
+        if not validate_address(request.args['dogecoin_account']):
+            alert = 'The Dogecoin address you provided is incorrect'
+            dogecoin_account = request.args['dogecoin_account']
+        else:
+            withdrawal = Withdrawal.to_dogecoin_address(request.args['dogecoin_account'], wac.account)
+            session.add(withdrawal)
+            session.commit()
+            return render_template('dogecoin/withdraw_redirect.html', wac=wac, withdrawal=withdrawal)
 
-    return render_template('dogecoin/withdraw.html', wac=wac)
+    return render_template('dogecoin/withdraw.html', wac=wac, alert=alert, dogecoin_account=dogecoin_account)
 
 
+@kyc_required(redirect="kyc")
 def deposit(session: Session, wac: WAC):
     return render_template('dogecoin/deposit.html', wac=wac)
 
 
+@kyc_required(redirect="kyc")
 def game(session: Session, wac: WAC):
     return render_template('dogecoin/game.html', wac=wac)
 

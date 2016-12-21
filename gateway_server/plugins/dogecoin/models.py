@@ -13,15 +13,15 @@ class Account:
 
 
 class Withdrawal:
-    pass
-    # bank_account = Column(String, nullable=True, default=None)
-    #
-    # @classmethod
-    # def to_bank_account(cls, bank_account: str, account: Account):
-    #     withdrawal = cls()
-    #     withdrawal.bank_account = bank_account
-    #     withdrawal.address = account.deposit_address
-    #     return withdrawal
+    dogecoin_address = Column(String, nullable=True, default=None)
+    dogecoin_txid = Column(String)
+
+    @classmethod
+    def to_dogecoin_address(cls, dogecoin_address: str, account: Account):
+        withdrawal = cls()
+        withdrawal.dogecoin_address = dogecoin_address
+        withdrawal.address = account.deposit_address
+        return withdrawal
 
 
 class Deposit:
