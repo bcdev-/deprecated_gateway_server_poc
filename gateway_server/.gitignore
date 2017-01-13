@@ -2,3 +2,4 @@
 gateway.db
 sqlitebrowser.sh
 .idea
+config.py
