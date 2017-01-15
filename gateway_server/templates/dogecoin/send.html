@@ -1,0 +1,29 @@
+<html>
+<head>
+    <script src="/static/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/dogecoin.css"/>
+</head>
+<body style="font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;">
+<img class="spin" src="http://dogecoin.com/imgs/dogecoin-300.png" height="100"/><br/>
+<form action='/v1/forms/send'>
+    <input type="radio" id="selectdoge" name="sendto" value="dogecoin"
+           onclick="$('#dogecoin_account').prop('disabled', false);">
+    <label for="selectdoge">
+        Send to Dogecoin account
+        <input type='text' id='dogecoin_account' name='dogecoin_account' disabled value="{{ dogecoin_account }}"/><br/>
+    </label>
+    <input id="selectwaves" type="radio" name="sendto" value="waves"
+           onclick="window.top.postMessage(['transfer'], '*');">
+    <label for="selectwaves">
+        Send to Waves account
+    </label>
+    <br/><br/>
+    <input type='submit' value='Send Dogecoin'/>
+    <input type='hidden' name='Session-Id' value='{{ wac.session_id }}'/>
+</form>
+<font color="#f00"><pre>{{alert}}</pre></font><br/>
+<br/><br/>
+
+<button onclick="window.top.postMessage(['gateway_close_form'], '*');">Cancel</button>
+</body>
+</html>

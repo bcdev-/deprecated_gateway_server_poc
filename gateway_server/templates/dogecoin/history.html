@@ -1,0 +1,34 @@
+<html>
+<head>
+    <script src="/static/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/dogecoin.css"/>
+</head>
+<body style="font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;">
+<img class="spin" src="http://dogecoin.com/imgs/dogecoin-300.png" height="100"/><br/>
+<h3>Your deposits:</h3>
+<table border="1">
+{% for deposit in deposits %}
+    <tr>
+        <td>{{deposit.amount_formatted}}</td>
+        <td><a href="#" onclick="window.top.postMessage(['open_link_in_a_new_window', 'http://testnet.wavesexplorer.com/tx/{{deposit.waves_transaction_id}}'], '*');">Waves tx</a></td>
+        <td><a href="#" onclick="window.top.postMessage(['open_link_in_a_new_window', 'https://dogechain.info/tx/{{deposit.dogecoin_txid}}'], '*');">Dogecoin tx</a></td>
+        <td>{% if deposit.executed %}Executed{% else %}Pending{% endif %}</td>
+    </tr>
+{% endfor %}
+</table>
+<h3>Your withdrawals:</h3>
+<table border="1">
+{% for withdrawal in withdrawals %}
+    <tr>
+        <td>{{withdrawal.amount_formatted}}</td>
+        <td><a href="#" onclick="window.top.postMessage(['open_link_in_a_new_window', 'http://testnet.wavesexplorer.com/tx/{{withdrawal.transaction_id}}'], '*');">Waves tx</a></td>
+        <td><a href="#" onclick="window.top.postMessage(['open_link_in_a_new_window', 'https://dogechain.info/tx/{{withdrawal.dogecoin_txid}}'], '*');">Dogecoin tx</a></td>
+        <td>{% if withdrawal.executed %}Executed{% else %}Pending{% endif %}</td>
+    </tr>
+{% endfor %}
+</table>
+<br/>
+
+<button onclick="window.top.postMessage(['gateway_close_form'], '*');">Close</button>
+</body>
+</html>

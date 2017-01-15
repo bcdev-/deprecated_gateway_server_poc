@@ -2,7 +2,7 @@ from sqlalchemy.orm.session import Session
 from flask import render_template, request
 import flask
 from front_end_manager.wac import WAC
-from common.models import Withdrawal
+from common.models import Withdrawal, Deposit
 from functools import wraps
 from .libdogecoin import validate_address
 
@@ -96,4 +96,44 @@ def game(session: Session, wac: WAC):
     return render_template('dogecoin/game.html', wac=wac)
 
 
-forms = {"details": details, "kyc": kyc, "withdraw": withdraw, "deposit": deposit, "game": game}
+@kyc_required(redirect="kyc")
+def send(session: Session, wac: WAC):
+    alert = ''
+    dogecoin_account = ''
+    if 'dogecoin_account' in request.args:
+        if not validate_address(request.args['dogecoin_account']):
+            alert = 'The Dogecoin address you provided is incorrect'
+            dogecoin_account = request.args['dogecoin_account']
+        else:
+            withdrawal = Withdrawal.to_dogecoin_address(request.args['dogecoin_account'], wac.account)
+            session.add(withdrawal)
+            session.commit()
+            return render_template('dogecoin/withdraw_redirect.html', wac=wac, withdrawal=withdrawal)
+
+    return render_template('dogecoin/send.html', wac=wac, alert=alert, dogecoin_account=dogecoin_account)
+
+
+@kyc_required(redirect="kyc")
+def history(session: Session, wac: WAC):
+    deposits = []
+    for deposit in session.query(Deposit).filter_by(address=wac.address):
+        deposits.append(deposit)
+    withdrawals = []
+    for withdrawal in session.query(Withdrawal).filter_by(address=wac.address):
+        withdrawals.append(withdrawal)
+
+    return render_template('dogecoin/history.html', wac=wac, deposits=deposits, withdrawals=withdrawals)
+
+
+@kyc_required(redirect="kyc")
+def settings(session: Session, wac: WAC):
+    return render_template('dogecoin/settings.html', wac=wac)
+
+
+@kyc_required(redirect="kyc")
+def support(session: Session, wac: WAC):
+    return render_template('dogecoin/support.html', wac=wac)
+
+
+forms = {"details": details, "kyc": kyc, "withdraw": withdraw, "deposit": deposit, "game": game, "send": send,
+         "history": history, "settings": settings, "support": support}

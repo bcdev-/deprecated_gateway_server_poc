@@ -9,6 +9,7 @@ from .db import Base
 from sqlalchemy import Column, Integer, String, ForeignKey, BigInteger, Boolean
 from sqlalchemy.orm.session import Session
 from .settings import currencies, session_timeout
+from .currencies import currencies as currencies_fancy
 from .node import get_new_deposit_account
 
 logger = logging.getLogger(__name__)
@@ -135,13 +136,13 @@ class Deposit(Base, *DepositExt):
 
     @property
     def currency_name(self) -> str:
-        if self.currency in currencies:
+        if self.currency in currencies_fancy:
             return currencies[self.currency].name
         return "UnknownCurrency<%s>" % self.currency
 
     @property
     def amount_formatted(self) -> str:
-        currency = currencies[self.currency]
+        currency = currencies_fancy[self.currency]
 
         str_format = "%%d.%%.%dd%%s" % currency.decimals
         return str_format % (int(self.amount / (10 ** currency.decimals)),
@@ -179,6 +180,20 @@ class Withdrawal(Base, *WithdrawalExt):
     accepted = Column(Boolean, default=False, index=True)
     executed = Column(Boolean, default=False, index=True)
     rejected = Column(Boolean, default=False, index=True)
+
+    @property
+    def currency_name(self) -> str:
+        if self.currency in currencies_fancy:
+            return currencies[self.currency].name
+        return "UnknownCurrency<%s>" % self.currency
+
+    @property
+    def amount_formatted(self) -> str:
+        currency = currencies_fancy[self.currency]
+
+        str_format = "%%d.%%.%dd%%s" % currency.decimals
+        return str_format % (int(self.amount / (10 ** currency.decimals)),
+                             int(self.amount % (10 ** currency.decimals)), currency.suffix)
 
 
 class UserSession(Base):

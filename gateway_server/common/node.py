@@ -50,6 +50,7 @@ def send_currency(currency: str, recipient: str, amount: int) -> str:
       "sender": gateway_address,
       "fee": default_fee
     }
+    print(json.dumps(data))
     r = post(url, headers=headers, data=json.dumps(data))
     print(r.json())
     return r.json()['id']

@@ -5,7 +5,7 @@ from common.settings import currencies
 import multiprocessing
 import time
 from .libdogecoin import get_last_transactions, send_dogecoin
-from common.settings import dogecoin_confirmations
+from common.settings import dogecoin_confirmations, dogecoin_deposit_fee
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,10 @@ class DepositHandler(multiprocessing.Process):
                 if account is not None:
                     deposit = session.query(Deposit).filter_by(dogecoin_txid=transaction['txid']).first()
                     if deposit is None:
-                        amount = int(transaction['amount'] * (10 ** self.DOGECOIN_DECIMAL_PLACES))
+                        real_amount = transaction['amount'] - dogecoin_deposit_fee
+                        if real_amount <= 0:
+                            amount = 0
+                        amount = int(real_amount * (10 ** self.DOGECOIN_DECIMAL_PLACES))
                         deposit = Deposit(account.address, my_currency_ids[0], amount)
                         deposit.dogecoin_txid = transaction['txid']
                         deposit.accepted = True

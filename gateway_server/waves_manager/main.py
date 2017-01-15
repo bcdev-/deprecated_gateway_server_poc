@@ -72,18 +72,20 @@ class WavesManager(multiprocessing.Process):
     def _scan_block(self, session: Session, block_number: int):
         transactions = get_transactions_for_block(block_number)
         for tx in transactions:
-            if tx["type"] == 4:  # Asset transfer transaction
-                account = session.query(Account).filter_by(deposit_address=tx["recipient"]).first()
-                if account and session.query(BlockchainTransaction).get(tx["id"]) is None:
-                    attachment = ''.join(chr(x) for x in b58decode(tx["attachment"]))
-                    logging.info("\t❤❤❤❤ A new withdrawal transaction received. - %s" % tx["id"])
-                    logging.info("\tFrom %s" % account.address)
-                    logging.info("\tTo %s" % tx["recipient"])
-                    logging.info("\tAsset %s" % tx["assetId"])
-                    logging.info("\tAmount %d" % tx["amount"])
-                    logging.info("\tAttachment %s" % attachment)
-                    # TODO: Check if currency is defined
-                    blockchain_transaction = BlockchainTransaction(tx["id"], account.address, tx["type"],
-                                                                   tx["timestamp"], attachment, tx["assetId"],
-                                                                   tx["amount"])
-                    session.add(blockchain_transaction)
+            try:
+                if tx["type"] == 4:  # Asset transfer transaction
+                    account = session.query(Account).filter_by(deposit_address=tx["recipient"]).first()
+                    if account and session.query(BlockchainTransaction).get(tx["id"]) is None:
+                        attachment = ''.join(chr(x) for x in b58decode(tx["attachment"]))
+                        logging.info("\t❤❤❤❤ A new withdrawal transaction received. - %s" % tx["id"])
+                        logging.info("\tFrom %s" % account.address)
+                        logging.info("\tTo %s" % tx["recipient"])
+                        logging.info("\tAsset %s" % tx["assetId"])
+                        logging.info("\tAmount %d" % tx["amount"])
+                        logging.info("\tAttachment %s" % attachment)
+                        # TODO: Check if currency is defined
+                        blockchain_transaction = BlockchainTransaction(tx["id"], account.address, tx["type"],
+                                                                       tx["timestamp"], attachment, tx["assetId"],
+                                                                       tx["amount"])
+                        session.add(blockchain_transaction)
+            except KeyError: pass  # Unknown transaction type

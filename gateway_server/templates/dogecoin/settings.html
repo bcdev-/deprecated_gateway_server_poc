@@ -1,0 +1,18 @@
+<html>
+<head>
+    <script src="/static/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/dogecoin.css"/>
+</head>
+<body style="font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;">
+<img class="spin" src="http://dogecoin.com/imgs/dogecoin-300.png" height="100"/><br/>
+When the gateway closes:<br/>
+{% if not wac.account.dogecoin_refund_address %}
+You will donate all funds in this account to bcdev.
+{% else %}
+You will receive a refund to {{ wac.account.dogecoin_refund_address|e }}
+{% endif %}
+<a href='/v1/forms/kyc?Session-Id={{ wac.session_id }}'>[change]</a><br/><br/>
+
+<button onclick="window.top.postMessage(['gateway_close_form'], '*');">Close</button>
+</body>
+</html>
