@@ -5,7 +5,7 @@ from common.settings import currencies
 import multiprocessing
 import time
 from .libdogecoin import get_last_transactions, send_dogecoin
-from common.settings import dogecoin_confirmations, dogecoin_deposit_fee
+from common.settings import dogecoin_confirmations, dogecoin_withdrawal_fee
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class DepositHandler(multiprocessing.Process):
                 if account is not None:
                     deposit = session.query(Deposit).filter_by(dogecoin_txid=transaction['txid']).first()
                     if deposit is None:
-                        real_amount = transaction['amount'] - dogecoin_deposit_fee
+                        real_amount = transaction['amount']
                         if real_amount <= 0:
                             amount = 0
                         amount = int(real_amount * (10 ** self.DOGECOIN_DECIMAL_PLACES))
@@ -69,29 +69,9 @@ class DepositHandler(multiprocessing.Process):
             withdrawal.executed = True
             session.commit()
             session.flush()
-            withdrawal.dogecoin_txid = send_dogecoin(withdrawal.dogecoin_address, withdrawal.amount)
+            real_amount = withdrawal.amount - dogecoin_withdrawal_fee * (10 ** self.DOGECOIN_DECIMAL_PLACES)
+            withdrawal.dogecoin_txid = send_dogecoin(withdrawal.dogecoin_address, real_amount)
             session.commit()
             session.flush()
 
         session.commit()
-
-        # def _handle_withdrawals(self):
-        #     session = Session()
-        #
-        #     # TODO: API for this
-        #     plugin_name = __name__.split('.')[1]
-        #     my_currency_ids = [c for c, p in currencies.items() if p == plugin_name]
-        #
-        #     # TODO: Create a cutesy API for plugin creators
-        #     print("asdfasdfasdfadsf")
-        #     withdrawals = session.query(Withdrawal).filter_by(accepted=True, executed=False, rejected=False).filter(
-        #         Withdrawal.currency.in_(my_currency_ids))
-        #     for withdrawal in withdrawals:
-        #         logger.info("Executing withdrawal %s" % withdrawal)
-        #         withdrawal.executed = True
-        #         session.commit()
-        #         self.bank_sim.send_money(session, withdrawal.bank_account, withdrawal.amount)
-        #         session.commit()
-        #         session.flush()
-        #
-        #     session.commit()

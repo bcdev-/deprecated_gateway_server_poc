@@ -21,9 +21,9 @@ So dear shibes, please deposit only small amounts.<br/><br/>
     <input type="checkbox" name="nohackrefunds" value="yes">I understand that this is an <i>experimental</i> Dogecoin
     gateway. I expect no refunds in case of hack.<br/>
     <font color="#f00"><pre>{{alert}}</pre></font><br/>
-    <input type="submit" value="Register"/>
+    <input class="gbutton" type="submit" value="Register"/>
     <input type="hidden" name="Session-Id" value="{{wac.session_id}}"/>
 </form>
-<button onclick="window.top.postMessage(['gateway_close_form'], '*');">Cancel</button>
+<button class="closebutton" onclick="window.top.postMessage(['gateway_close_form'], '*');">Cancel</button>
 </body>
 </html>

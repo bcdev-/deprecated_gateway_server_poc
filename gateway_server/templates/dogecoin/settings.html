@@ -11,8 +11,8 @@ You will donate all funds in this account to bcdev.
 {% else %}
 You will receive a refund to {{ wac.account.dogecoin_refund_address|e }}
 {% endif %}
-<a href='/v1/forms/kyc?Session-Id={{ wac.session_id }}'>[change]</a><br/><br/>
+<a class="gbutton" href='/v1/forms/kyc?Session-Id={{ wac.session_id }}' style="appearance: button;-moz-appearance: button;-webkit-appearance: button;">Change</a><br/><br/>
 
-<button onclick="window.top.postMessage(['gateway_close_form'], '*');">Close</button>
+<button class="closebutton" onclick="window.top.postMessage(['gateway_close_form'], '*');">Close</button>
 </body>
 </html>

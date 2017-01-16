@@ -7,23 +7,25 @@
 <img class="spin" src="http://dogecoin.com/imgs/dogecoin-300.png" height="100"/><br/>
 <form action='/v1/forms/send'>
     <input type="radio" id="selectdoge" name="sendto" value="dogecoin"
-           onclick="$('#dogecoin_account').prop('disabled', false);">
+           onclick="$('#dogecoin_account').prop('disabled', false);$('#feewarning').show();">
     <label for="selectdoge">
         Send to Dogecoin account
-        <input type='text' id='dogecoin_account' name='dogecoin_account' disabled value="{{ dogecoin_account }}"/><br/>
+        <input type='text' id='dogecoin_account' name='dogecoin_account' disabled value="{% if dogecoin_account %}{{ dogecoin_account }}{% else %}Dogecoin account{% endif %}"/><br/>
     </label>
+    <div id="feewarning" style="display: none;">1 <img class="spin" src="http://dogecoin.com/imgs/dogecoin-300.png" style="width:25px;height:25px;"/> will be deduced from your withdrawal as a fee. Thus, you need to send 1 <img class="spin" src="http://dogecoin.com/imgs/dogecoin-300.png" style="width:25px;height:25px;"/> more than a target amount.<br/>
+        <input class="gbutton" type='submit' value='Send Dogecoin'/>
+    <br/><br/><br/></div>
     <input id="selectwaves" type="radio" name="sendto" value="waves"
-           onclick="window.top.postMessage(['transfer'], '*');">
+           onclick="window.top.postMessage(['transfer'], '*');$('#feewarning').hide();">
     <label for="selectwaves">
         Send to Waves account
     </label>
     <br/><br/>
-    <input type='submit' value='Send Dogecoin'/>
     <input type='hidden' name='Session-Id' value='{{ wac.session_id }}'/>
 </form>
 <font color="#f00"><pre>{{alert}}</pre></font><br/>
 <br/><br/>
 
-<button onclick="window.top.postMessage(['gateway_close_form'], '*');">Cancel</button>
+<button class="closebutton" onclick="window.top.postMessage(['gateway_close_form'], '*');">Cancel</button>
 </body>
 </html>
