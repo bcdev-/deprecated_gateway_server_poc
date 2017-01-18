@@ -1,5 +1,5 @@
 from pyblake2 import blake2b
-from sha3 import sha3_256
+from sha3 import keccak_256 as sha3_256
 from base58 import b58decode, b58encode
 from .settings import testnet as is_testnet
 
